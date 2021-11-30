@@ -32,7 +32,7 @@ public class EnderecoDAO {
         ps.setString(3, end.getMunicipio());
         ps.setString(4, end.getBairro());
         ps.setString(5, end.getEstado());
-        ps.setInt(6, end.getNumero());
+        ps.setString(6, end.getNumero());
         ps.setString(7, end.getCep());
 
         ps.execute();
@@ -51,7 +51,7 @@ public class EnderecoDAO {
         ps.setString(2, end.getMunicipio());
         ps.setString(3, end.getBairro());
         ps.setString(4, end.getEstado());
-        ps.setInt(5, end.getNumero());
+        ps.setString(5, end.getNumero());
         ps.setString(6, end.getCep());
 
         ps.setInt(7, id);
@@ -93,7 +93,7 @@ public class EnderecoDAO {
             end.setMunicipio(rs.getString("municipio"));
             end.setBairro(rs.getString("bairro"));
             end.setEstado(rs.getString("estado"));
-            end.setNumero(rs.getInt("numero"));
+            end.setNumero(rs.getString("numero"));
             end.setCep(rs.getString("cep"));
         }
 
@@ -120,7 +120,7 @@ public class EnderecoDAO {
             end.setMunicipio(rs.getString("municipio"));
             end.setBairro(rs.getString("bairro"));
             end.setEstado(rs.getString("estado"));
-            end.setNumero(rs.getInt("numero"));
+            end.setNumero(rs.getString("numero"));
             end.setCep(rs.getString("cep"));
 
             enderecos.add(end);

@@ -86,4 +86,21 @@ public class NotaFiscal {
         this.funcionario = funcionario;
     }
 
+    public float pesoTotal() {
+        float peso = 0;
+
+        for (Produto p : produtos) {
+            peso += p.getPeso();
+        }
+        return peso;
+    }
+
+    public float valorTotal() {
+        float valor = 0;
+
+        for (Produto p : produtos) {
+            valor += p.getPreco();
+        }
+        return valor;
+    }
 }

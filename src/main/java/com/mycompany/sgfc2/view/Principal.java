@@ -1,11 +1,49 @@
 package com.mycompany.sgfc2.view;
 
+import com.mycompany.sgfc2.view.outros.ProdutoRelatorioModal;
+import com.mycompany.sgfc2.view.outros.EnderecoRelatorioModal;
+import com.mycompany.sgfc2.view.selecionar.SelecionarTipoUsuario;
+import com.mycompany.sgfc2.view.funcionario.FuncionarioRemover;
+import com.mycompany.sgfc2.view.funcionario.FuncionarioRelatorioModal;
+import com.mycompany.sgfc2.view.funcionario.FuncionarioConsulta;
+import com.mycompany.sgfc2.view.funcionario.FuncionarioAdd;
+import com.mycompany.sgfc2.view.funcionario.FuncionarioAlterar;
+import com.mycompany.sgfc2.view.motorista.MotoristaRelatorioModal;
+import com.mycompany.sgfc2.view.motorista.MotoristaAlterar;
+import com.mycompany.sgfc2.view.motorista.MotoristaRemover;
+import com.mycompany.sgfc2.view.motorista.MotoristaConsulta;
+import com.mycompany.sgfc2.view.motorista.MotoristaAdd;
+import com.mycompany.sgfc2.view.notafiscal.NotaFiscalAdd;
+import com.mycompany.sgfc2.view.notafiscal.NotaFiscalRelatorioModal;
+import com.mycompany.sgfc2.view.notafiscal.NotaFiscalConsulta;
+import com.mycompany.sgfc2.view.notafiscal.NotaFiscalAlterar;
+import com.mycompany.sgfc2.view.notafiscal.NotaFiscalRemover;
+import com.mycompany.sgfc2.view.caminhao.CaminhaoRemover;
+import com.mycompany.sgfc2.view.caminhao.CaminhaoConsulta;
+import com.mycompany.sgfc2.view.caminhao.CaminhaoAdd;
+import com.mycompany.sgfc2.view.caminhao.CaminhaoAlterar;
+import com.mycompany.sgfc2.view.carga.CargaRemover;
+import com.mycompany.sgfc2.view.carga.CargaDespachar;
+import com.mycompany.sgfc2.view.carga.CargaAlterar;
+import com.mycompany.sgfc2.view.carga.CargaConsulta;
+import com.mycompany.sgfc2.view.carga.CargaAdd;
+import com.mycompany.sgfc2.view.carga.CargaPendentes;
 import com.mycompany.sgfc2.controller.AdminActions;
 import com.mycompany.sgfc2.controller.Conexao;
 import java.awt.Component;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 public class Principal extends javax.swing.JFrame {
 
@@ -25,6 +63,25 @@ public class Principal extends javax.swing.JFrame {
         } catch (Exception ex) {
             tipoUsuario(0);
             JOptionPane.showMessageDialog(null, "Erro ao conectar-se ao banco de dados, motivo: " + ex.getMessage(),
+                    "Erro", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private void criaRelatorio(String archiveName) {
+        try {
+            conn = Conexao.getConexao();
+            String path = "src/main/java/com/mycompany/sgfc2/view/relatoriosjasper/" + archiveName;
+            JasperReport jr = (JasperReport) JRLoader.loadObjectFromFile(path);
+            JasperViewer jv = new JasperViewer(JasperFillManager.fillReport(jr, null, conn), false);
+            jv.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            jv.setVisible(true);
+            jv.setTitle("Relatório completo.");
+
+        } catch (JRException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao criar relatório, motivo: " + e.getMessage(),
+                    "Erro", JOptionPane.WARNING_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao criar relatório, motivo: " + ex.getMessage(),
                     "Erro", JOptionPane.WARNING_MESSAGE);
         }
     }
@@ -67,10 +124,8 @@ public class Principal extends javax.swing.JFrame {
 
     private void fechaTelas() {
         if (dskpTela.getComponents().length > 0) {
-            for (Component c : dskpTela.getComponents()) {
-                c.setVisible(false);
-            }
             dskpTela.removeAll();
+            dskpTela.repaint();
         }
     }
 
@@ -121,8 +176,8 @@ public class Principal extends javax.swing.JFrame {
         mniRelatorioVisualProd = new javax.swing.JMenuItem();
         mnEnderecos = new javax.swing.JMenu();
         mniEnderecosRelatorio = new javax.swing.JMenuItem();
-        mniApagarTudo = new javax.swing.JMenuItem();
         mniRelatorioVisualEnd = new javax.swing.JMenuItem();
+        mniApagarTudo = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SGFC");
@@ -210,6 +265,11 @@ public class Principal extends javax.swing.JFrame {
 
         mniRelatorioVisualCarga.setIcon(new javax.swing.ImageIcon("C:\\Users\\Coy\\Documents\\NetBeansProjects\\sgfc2\\src\\main\\java\\com\\mycompany\\sgfc2\\resources\\icn_relatorio_visual.png")); // NOI18N
         mniRelatorioVisualCarga.setText("Relatório Visual");
+        mniRelatorioVisualCarga.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniRelatorioVisualCargaActionPerformed(evt);
+            }
+        });
         mnCarga.add(mniRelatorioVisualCarga);
 
         mnMenus.add(mnCarga);
@@ -257,6 +317,11 @@ public class Principal extends javax.swing.JFrame {
 
         mniRelatorioVisualCam.setIcon(new javax.swing.ImageIcon("C:\\Users\\Coy\\Documents\\NetBeansProjects\\sgfc2\\src\\main\\java\\com\\mycompany\\sgfc2\\resources\\icn_relatorio_visual.png")); // NOI18N
         mniRelatorioVisualCam.setText("Relatório Visual");
+        mniRelatorioVisualCam.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniRelatorioVisualCamActionPerformed(evt);
+            }
+        });
         mnCaminhao.add(mniRelatorioVisualCam);
 
         mnMenus.add(mnCaminhao);
@@ -313,6 +378,11 @@ public class Principal extends javax.swing.JFrame {
 
         mniRelatorioVisualNF.setIcon(new javax.swing.ImageIcon("C:\\Users\\Coy\\Documents\\NetBeansProjects\\sgfc2\\src\\main\\java\\com\\mycompany\\sgfc2\\resources\\icn_relatorio_visual.png")); // NOI18N
         mniRelatorioVisualNF.setText("Relatório Visual");
+        mniRelatorioVisualNF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniRelatorioVisualNFActionPerformed(evt);
+            }
+        });
         mnNotaFiscal.add(mniRelatorioVisualNF);
 
         mnMenus.add(mnNotaFiscal);
@@ -369,6 +439,11 @@ public class Principal extends javax.swing.JFrame {
 
         mniRelatorioVisualMot.setIcon(new javax.swing.ImageIcon("C:\\Users\\Coy\\Documents\\NetBeansProjects\\sgfc2\\src\\main\\java\\com\\mycompany\\sgfc2\\resources\\icn_relatorio_visual.png")); // NOI18N
         mniRelatorioVisualMot.setText("Relatório Visual");
+        mniRelatorioVisualMot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniRelatorioVisualMotActionPerformed(evt);
+            }
+        });
         mnMotorista.add(mniRelatorioVisualMot);
 
         mnMenus.add(mnMotorista);
@@ -425,6 +500,11 @@ public class Principal extends javax.swing.JFrame {
 
         mniRelatorioVisualFunc.setIcon(new javax.swing.ImageIcon("C:\\Users\\Coy\\Documents\\NetBeansProjects\\sgfc2\\src\\main\\java\\com\\mycompany\\sgfc2\\resources\\icn_relatorio_visual.png")); // NOI18N
         mniRelatorioVisualFunc.setText("Relatório Visual");
+        mniRelatorioVisualFunc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniRelatorioVisualFuncActionPerformed(evt);
+            }
+        });
         mnFuncionario.add(mniRelatorioVisualFunc);
 
         mnMenus.add(mnFuncionario);
@@ -448,6 +528,11 @@ public class Principal extends javax.swing.JFrame {
 
         mniRelatorioVisualProd.setIcon(new javax.swing.ImageIcon("C:\\Users\\Coy\\Documents\\NetBeansProjects\\sgfc2\\src\\main\\java\\com\\mycompany\\sgfc2\\resources\\icn_relatorio_visual.png")); // NOI18N
         mniRelatorioVisualProd.setText("Relatório Visual");
+        mniRelatorioVisualProd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniRelatorioVisualProdActionPerformed(evt);
+            }
+        });
         mnProdutos.add(mniRelatorioVisualProd);
 
         mnProdEnd.add(mnProdutos);
@@ -464,6 +549,15 @@ public class Principal extends javax.swing.JFrame {
         });
         mnEnderecos.add(mniEnderecosRelatorio);
 
+        mniRelatorioVisualEnd.setIcon(new javax.swing.ImageIcon("C:\\Users\\Coy\\Documents\\NetBeansProjects\\sgfc2\\src\\main\\java\\com\\mycompany\\sgfc2\\resources\\icn_relatorio_visual.png")); // NOI18N
+        mniRelatorioVisualEnd.setText("Relatório Visual");
+        mniRelatorioVisualEnd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniRelatorioVisualEndActionPerformed(evt);
+            }
+        });
+        mnEnderecos.add(mniRelatorioVisualEnd);
+
         mniApagarTudo.setIcon(new javax.swing.ImageIcon("C:\\Users\\Coy\\Documents\\NetBeansProjects\\sgfc2\\src\\main\\java\\com\\mycompany\\sgfc2\\resources\\icn_apagartudo.png")); // NOI18N
         mniApagarTudo.setText("Apagar Todos os registros");
         mniApagarTudo.addActionListener(new java.awt.event.ActionListener() {
@@ -472,10 +566,6 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         mnEnderecos.add(mniApagarTudo);
-
-        mniRelatorioVisualEnd.setIcon(new javax.swing.ImageIcon("C:\\Users\\Coy\\Documents\\NetBeansProjects\\sgfc2\\src\\main\\java\\com\\mycompany\\sgfc2\\resources\\icn_relatorio_visual.png")); // NOI18N
-        mniRelatorioVisualEnd.setText("Relatório Visual");
-        mnEnderecos.add(mniRelatorioVisualEnd);
 
         mnProdEnd.add(mnEnderecos);
 
@@ -613,13 +703,13 @@ public class Principal extends javax.swing.JFrame {
     private void mniApagarTudoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniApagarTudoActionPerformed
         int opt = JOptionPane.showConfirmDialog(rootPane, "Tem certeza que deseja apagar todos os registros do banco de dados?",
                 "Confirmação", JOptionPane.YES_NO_OPTION);
-        if (opt == 0){
+        if (opt == 0) {
             try {
                 AdminActions adminActions = new AdminActions();
                 adminActions.apagaTudo();
                 JOptionPane.showMessageDialog(rootPane, "Banco de dados apagado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(rootPane, "Erro: "+ e.getMessage(), "Erro", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(rootPane, "Erro: " + e.getMessage(), "Erro", JOptionPane.WARNING_MESSAGE);
             }
         }
     }//GEN-LAST:event_mniApagarTudoActionPerformed
@@ -638,6 +728,34 @@ public class Principal extends javax.swing.JFrame {
         NotaFiscalRelatorioModal nfRelatorio = new NotaFiscalRelatorioModal(this, true);
         nfRelatorio.setVisible(true);
     }//GEN-LAST:event_mniRelaNotaFiscalActionPerformed
+
+    private void mniRelatorioVisualCargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniRelatorioVisualCargaActionPerformed
+        criaRelatorio("CargaJasper.jasper");
+    }//GEN-LAST:event_mniRelatorioVisualCargaActionPerformed
+
+    private void mniRelatorioVisualCamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniRelatorioVisualCamActionPerformed
+        criaRelatorio("CaminhaoJasper.jasper");
+    }//GEN-LAST:event_mniRelatorioVisualCamActionPerformed
+
+    private void mniRelatorioVisualNFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniRelatorioVisualNFActionPerformed
+        criaRelatorio("NotaFiscalJasper.jasper");
+    }//GEN-LAST:event_mniRelatorioVisualNFActionPerformed
+
+    private void mniRelatorioVisualMotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniRelatorioVisualMotActionPerformed
+        criaRelatorio("MotoristaJasper.jasper");
+    }//GEN-LAST:event_mniRelatorioVisualMotActionPerformed
+
+    private void mniRelatorioVisualFuncActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniRelatorioVisualFuncActionPerformed
+        criaRelatorio("FuncionarioJasper.jasper");
+    }//GEN-LAST:event_mniRelatorioVisualFuncActionPerformed
+
+    private void mniRelatorioVisualProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniRelatorioVisualProdActionPerformed
+        criaRelatorio("ProdutoJasper.jasper");
+    }//GEN-LAST:event_mniRelatorioVisualProdActionPerformed
+
+    private void mniRelatorioVisualEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniRelatorioVisualEndActionPerformed
+        criaRelatorio("EnderecoJasper.jasper");
+    }//GEN-LAST:event_mniRelatorioVisualEndActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */

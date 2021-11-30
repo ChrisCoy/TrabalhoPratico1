@@ -93,6 +93,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Relat&#xf3;rio Visual"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniRelatorioVisualCargaActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -163,6 +166,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Relat&#xf3;rio Visual"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniRelatorioVisualCamActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -244,6 +250,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Relat&#xf3;rio Visual"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniRelatorioVisualNFActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -325,6 +334,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Relat&#xf3;rio Visual"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniRelatorioVisualMotActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -406,6 +418,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Relat&#xf3;rio Visual"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniRelatorioVisualFuncActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -451,6 +466,9 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Relat&#xf3;rio Visual"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniRelatorioVisualProdActionPerformed"/>
+                  </Events>
                 </MenuItem>
               </SubComponents>
             </Menu>
@@ -473,6 +491,17 @@
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniEnderecosRelatorioActionPerformed"/>
                   </Events>
                 </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="mniRelatorioVisualEnd">
+                  <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="2" name="C:\Users\Coy\Documents\NetBeansProjects\sgfc2\src\main\java\com\mycompany\sgfc2\resources\icn_relatorio_visual.png"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Relat&#xf3;rio Visual"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniRelatorioVisualEndActionPerformed"/>
+                  </Events>
+                </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="mniApagarTudo">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
@@ -483,14 +512,6 @@
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniApagarTudoActionPerformed"/>
                   </Events>
-                </MenuItem>
-                <MenuItem class="javax.swing.JMenuItem" name="mniRelatorioVisualEnd">
-                  <Properties>
-                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="2" name="C:\Users\Coy\Documents\NetBeansProjects\sgfc2\src\main\java\com\mycompany\sgfc2\resources\icn_relatorio_visual.png"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="Relat&#xf3;rio Visual"/>
-                  </Properties>
                 </MenuItem>
               </SubComponents>
             </Menu>
