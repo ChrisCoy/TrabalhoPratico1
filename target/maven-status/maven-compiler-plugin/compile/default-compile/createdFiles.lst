@@ -3,6 +3,7 @@ com\mycompany\sgfc2\view\selecionar\SelecionarNotaFiscalModal$4.class
 com\mycompany\sgfc2\view\carga\CargaDespachar$2.class
 com\mycompany\sgfc2\view\selecionar\SelecionarTipoUsuario$2.class
 com\mycompany\sgfc2\view\funcionario\FuncionarioAdd$1.class
+com\mycompany\sgfc2\view\notafiscal\NotaFiscalConsulta$3.class
 com\mycompany\sgfc2\view\selecionar\SelecionarMotoristaModal$4.class
 com\mycompany\sgfc2\model\Motorista.class
 com\mycompany\sgfc2\view\caminhao\CaminhaoConsulta.class
@@ -91,6 +92,7 @@ com\mycompany\sgfc2\view\notafiscal\NotaFiscalAlterar$2.class
 com\mycompany\sgfc2\view\carga\CargaRemover$2.class
 com\mycompany\sgfc2\view\ver\verFuncionario$1.class
 com\mycompany\sgfc2\model\Pessoa.class
+com\mycompany\sgfc2\view\caminhao\CaminhaoConsulta$4.class
 com\mycompany\sgfc2\view\Principal$17.class
 com\mycompany\sgfc2\view\outros\AddProdModal$3$1.class
 com\mycompany\sgfc2\view\selecionar\SelecionarNotaFiscalModal$2.class
@@ -99,6 +101,7 @@ com\mycompany\sgfc2\view\Principal$23.class
 com\mycompany\sgfc2\view\motorista\MotoristaRemover.class
 com\mycompany\sgfc2\model\Caminhao.class
 com\mycompany\sgfc2\view\notafiscal\NotaFiscalAlterar$1.class
+com\mycompany\sgfc2\view\motorista\MotoristaConsulta$2.class
 com\mycompany\sgfc2\controller\DAO\EnderecoDAO.class
 com\mycompany\sgfc2\view\caminhao\CaminhaoAdd$2.class
 com\mycompany\sgfc2\view\Principal$18.class
@@ -130,6 +133,7 @@ com\mycompany\sgfc2\view\Principal$8.class
 com\mycompany\sgfc2\view\Principal$25.class
 com\mycompany\sgfc2\view\notafiscal\NotaFiscalAlterar$3.class
 com\mycompany\sgfc2\view\carga\CargaAlterar$3.class
+com\mycompany\sgfc2\view\funcionario\FuncionarioConsulta$2.class
 com\mycompany\sgfc2\view\notafiscal\NotaFiscalAdd$5.class
 com\mycompany\sgfc2\view\ver\verCaminhao.class
 com\mycompany\sgfc2\view\funcionario\FuncionarioAlterar$2.class

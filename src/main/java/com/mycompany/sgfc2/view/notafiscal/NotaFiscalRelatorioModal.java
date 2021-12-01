@@ -24,7 +24,7 @@ public class NotaFiscalRelatorioModal extends javax.swing.JDialog {
                         n.getProdutos().size() ,n.getOrigem().getRua(), n.getDestino().getRua(),
                         n.getDataExpedicao(), n.getDataEntrega(), n.getFuncionario().getNome()});
                 }
-                setTitle(notas.size() + " Motoristas cadastrados");
+                setTitle(notas.size() + " Notas Fiscais cadastrados");
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane, "Erro, motivo: " + e.getMessage(), "Erro", JOptionPane.WARNING_MESSAGE);

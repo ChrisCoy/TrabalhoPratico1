@@ -43,7 +43,7 @@ public class CargaConsulta extends javax.swing.JInternalFrame {
             JasperViewer jv = new JasperViewer(JasperFillManager.fillReport(jr, parametros, conn), false);
             jv.setExtendedState(JFrame.MAXIMIZED_BOTH);
             jv.setVisible(true);
-            jv.setTitle("Relatório detalhado.");
+            jv.setTitle("Relatório detalhado de carga.");
 
         } catch (JRException e) {
             JOptionPane.showMessageDialog(null, "Erro: " + e.getMessage(),
@@ -444,6 +444,8 @@ public class CargaConsulta extends javax.swing.JInternalFrame {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             float peso = 0, valor = 0;
             param.put("id", cg.getId());
+            param.put("id", cg.getId());
+            param.put("id", cg.getId());
             param.put("dataConf", cg.getDataConferencia().format(formatter));
             param.put("dataAut", cg.getDataAutorizacao().format(formatter));
 
@@ -475,16 +477,13 @@ public class CargaConsulta extends javax.swing.JInternalFrame {
             if (cg.getNotasFiscais() != null || !cg.getNotasFiscais().isEmpty()) {
                 for (NotaFiscal nf : cg.getNotasFiscais()) {
                     peso += nf.pesoTotal();
-                }
-                param.put("pesoTotal", peso);
-
-                for (NotaFiscal nf : cg.getNotasFiscais()) {
                     valor += nf.valorTotal();
                 }
+                param.put("pesoTotal", peso);
                 param.put("valorTotal", valor);
 
                 param.put("quantidadeNF", cg.getNotasFiscais().size());
-            }else {
+            } else {
                 param.put("pesoTotal", 0);
                 param.put("valorTotal", 0);
                 param.put("quantidadeNF", 0);

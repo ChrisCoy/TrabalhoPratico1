@@ -1,21 +1,51 @@
 package com.mycompany.sgfc2.view.notafiscal;
 
+import com.mycompany.sgfc2.controller.Conexao;
 import com.mycompany.sgfc2.controller.DAO.NotaFiscalDAO;
 import com.mycompany.sgfc2.model.NotaFiscal;
 import com.mycompany.sgfc2.view.outros.ProdutoRelatorioModal;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 public class NotaFiscalConsulta extends javax.swing.JInternalFrame {
 
     private NotaFiscal nf;
     private NotaFiscalDAO nfDao = new NotaFiscalDAO();
-
+    private Connection conn;
+    
     public NotaFiscalConsulta() {
         initComponents();
     }
 
+        private void criaRelatorio(String archiveName, HashMap parametros) {
+        try {
+            conn = Conexao.getConexao();
+            String path = "src/main/java/com/mycompany/sgfc2/view/relatoriosjasper/" + archiveName;
+            JasperReport jr = (JasperReport) JRLoader.loadObjectFromFile(path);
+
+            JasperViewer jv = new JasperViewer(JasperFillManager.fillReport(jr, parametros, conn), false);
+            jv.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            jv.setVisible(true);
+            jv.setTitle("Relatório detalhado de nota fiscal.");
+
+        } catch (JRException e) {
+            JOptionPane.showMessageDialog(null, "Erro: " + e.getMessage(),
+                    "Erro", JOptionPane.WARNING_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Erro: " + ex.getMessage(),
+                    "Erro", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -33,7 +63,7 @@ public class NotaFiscalConsulta extends javax.swing.JInternalFrame {
         lblProdutos = new javax.swing.JLabel();
         lblProdQntd = new javax.swing.JLabel();
         pnlPesquisa = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
+        btnPesquisar = new javax.swing.JButton();
         tfPesquisa = new javax.swing.JTextField();
         lblPesquisa = new javax.swing.JLabel();
         tfEndOrigem = new javax.swing.JTextField();
@@ -80,11 +110,11 @@ public class NotaFiscalConsulta extends javax.swing.JInternalFrame {
 
         pnlPesquisa.setBorder(javax.swing.BorderFactory.createTitledBorder("Pesquisa"));
 
-        jButton3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jButton3.setText("Pesquisar");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnPesquisar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnPesquisar.setText("Pesquisar");
+        btnPesquisar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnPesquisarActionPerformed(evt);
             }
         });
 
@@ -103,7 +133,7 @@ public class NotaFiscalConsulta extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(tfPesquisa, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton3)
+                .addComponent(btnPesquisar)
                 .addContainerGap())
         );
         pnlPesquisaLayout.setVerticalGroup(
@@ -112,7 +142,7 @@ public class NotaFiscalConsulta extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(pnlPesquisaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblPesquisa)
-                    .addComponent(jButton3)
+                    .addComponent(btnPesquisar)
                     .addComponent(tfPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(24, Short.MAX_VALUE))
         );
@@ -137,6 +167,11 @@ public class NotaFiscalConsulta extends javax.swing.JInternalFrame {
         btnExibirConsulta.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnExibirConsulta.setText("Exibir Consulta Visualmente");
         btnExibirConsulta.setEnabled(false);
+        btnExibirConsulta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExibirConsultaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlConteudoLayout = new javax.swing.GroupLayout(pnlConteudo);
         pnlConteudo.setLayout(pnlConteudoLayout);
@@ -241,7 +276,7 @@ public class NotaFiscalConsulta extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
         btnVerProdutos.setEnabled(false);
         try {
             nf = nfDao.consulta(Integer.parseInt(tfPesquisa.getText()));
@@ -265,27 +300,61 @@ public class NotaFiscalConsulta extends javax.swing.JInternalFrame {
                 tfAjudante.setText(nf.getFuncionario().getNome());
 
                 lblProdQntd.setText(nf.getProdutos().size() + " Produtos adicionados");
-                
+                btnExibirConsulta.setEnabled(true);
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Erro, motivo: " + e.getMessage(), "Erro", JOptionPane.WARNING_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Erro, motivo: " + e.getMessage(), "Erro", JOptionPane.WARNING_MESSAGE);
         }
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnPesquisarActionPerformed
 
     private void btnVerProdutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerProdutosActionPerformed
         ProdutoRelatorioModal verProd = new ProdutoRelatorioModal(null, true, nf.getProdutos());
         verProd.setVisible(true);
     }//GEN-LAST:event_btnVerProdutosActionPerformed
 
+    private void btnExibirConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExibirConsultaActionPerformed
+        HashMap param = new HashMap();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        
+        param.put("numero", nf.getNumero());
+        if (nf.getDataExpedicao()!= null){
+            param.put("dataExped", nf.getDataExpedicao().format(formatter));
+        }else{
+            param.put("dataExped", "");
+        }
+        if (nf.getDataEntrega() != null){
+            param.put("dataEntr", nf.getDataEntrega().format(formatter));
+        }else {
+            param.put("dataEntr", "");
+        }
+        if (nf.getFuncionario() != null){
+            param.put("ajudanteNome", nf.getFuncionario().getNome());
+        }
+        
+        param.put("ruaOrigem", nf.getOrigem().getRua());
+        param.put("municipioOrigem", nf.getOrigem().getMunicipio());
+        param.put("estadoOrigem", nf.getOrigem().getEstado());
+        param.put("numeroOrigem", nf.getOrigem().getNumero());
+        param.put("cepOrigem", nf.getOrigem().getCep());
+        
+        param.put("ruaDestino", nf.getDestino().getRua());
+        param.put("municipioDestino", nf.getDestino().getMunicipio());
+        param.put("estadoDestino", nf.getDestino().getEstado());
+        param.put("numeroDestino", nf.getDestino().getNumero());
+        param.put("cepDestino", nf.getDestino().getCep());
+        
+        criaRelatorio("NotaFiscalCompletoJasper.jasper", param);
+    }//GEN-LAST:event_btnExibirConsultaActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExibirConsulta;
+    private javax.swing.JButton btnPesquisar;
     private javax.swing.JButton btnVerProdutos;
     private javax.swing.JFormattedTextField ftDataEntreg;
     private javax.swing.JFormattedTextField ftDataExp;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel lblAjudante;
     private javax.swing.JLabel lblDataEntrega;
     private javax.swing.JLabel lblDataExpedicao;

@@ -1,15 +1,47 @@
 package com.mycompany.sgfc2.view.funcionario;
 
+import com.mycompany.sgfc2.controller.Conexao;
 import com.mycompany.sgfc2.controller.DAO.FuncionarioDAO;
 import com.mycompany.sgfc2.model.Funcionario;
+import java.sql.Connection;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 public class FuncionarioConsulta extends javax.swing.JInternalFrame {
 
     private FuncionarioDAO funcDao = new FuncionarioDAO();
+    private Funcionario f;
+    private Connection conn;
 
     public FuncionarioConsulta() {
         initComponents();
+    }
+
+    private void criaRelatorio(String archiveName, HashMap parametros) {
+        try {
+            conn = Conexao.getConexao();
+            String path = "src/main/java/com/mycompany/sgfc2/view/relatoriosjasper/" + archiveName;
+            JasperReport jr = (JasperReport) JRLoader.loadObjectFromFile(path);
+
+            JasperViewer jv = new JasperViewer(JasperFillManager.fillReport(jr, parametros, conn), false);
+            jv.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            jv.setVisible(true);
+            jv.setTitle("Relatório detalhado de funcionário.");
+
+        } catch (JRException e) {
+            JOptionPane.showMessageDialog(null, "Erro: " + e.getMessage(),
+                    "Erro", JOptionPane.WARNING_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Erro: " + ex.getMessage(),
+                    "Erro", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -114,6 +146,11 @@ public class FuncionarioConsulta extends javax.swing.JInternalFrame {
         btnExibirConsulta.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnExibirConsulta.setText("Exibir Consulta Visualmente");
         btnExibirConsulta.setEnabled(false);
+        btnExibirConsulta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExibirConsultaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlConteudoLayout = new javax.swing.GroupLayout(pnlConteudo);
         pnlConteudo.setLayout(pnlConteudoLayout);
@@ -201,7 +238,7 @@ public class FuncionarioConsulta extends javax.swing.JInternalFrame {
 
     private void btnPesquisaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisaActionPerformed
         try {
-            Funcionario f = funcDao.consulta(tfPesquisa.getText());
+            f = funcDao.consulta(tfPesquisa.getText());
 
             if (f != null) {
                 tfNome.setText(f.getNome());
@@ -214,7 +251,7 @@ public class FuncionarioConsulta extends javax.swing.JInternalFrame {
                 } else {
                     cbxNivel.setSelectedIndex(f.getNivelPermissao() - 1);
                 }
-                
+
                 btnExibirConsulta.setEnabled(true);
             } else {
                 JOptionPane.showMessageDialog(this, "Não encontrado.", "Resultado", JOptionPane.INFORMATION_MESSAGE);
@@ -224,6 +261,19 @@ public class FuncionarioConsulta extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Erro, motivo: " + e.getMessage(), "Erro", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_btnPesquisaActionPerformed
+
+    private void btnExibirConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExibirConsultaActionPerformed
+        HashMap param = new HashMap();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        param.put("nome", f.getNome());
+        param.put("ctps", f.getCtps());
+        param.put("salario", f.getSalario());
+        param.put("funcao", f.getFuncao());
+        param.put("nivel", f.getNivelPermissao());
+        
+        criaRelatorio("FuncionarioCompletoJasper.jasper", param);
+    }//GEN-LAST:event_btnExibirConsultaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

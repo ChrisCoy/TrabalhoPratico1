@@ -1,20 +1,51 @@
 package com.mycompany.sgfc2.view.caminhao;
 
+import com.mycompany.sgfc2.controller.Conexao;
 import com.mycompany.sgfc2.controller.DAO.CaminhaoDAO;
 import com.mycompany.sgfc2.model.Caminhao;
+import com.mycompany.sgfc2.model.NotaFiscal;
 import com.mycompany.sgfc2.view.selecionar.SelecionarCaminhaoModal;
 import com.mycompany.sgfc2.view.selecionar.SelecionarMotoristaModal;
 import com.mycompany.sgfc2.view.ver.verMotorista;
+import java.sql.Connection;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 public class CaminhaoConsulta extends javax.swing.JInternalFrame {
 
     private CaminhaoDAO camDao = new CaminhaoDAO();
     private Caminhao cam = new Caminhao();
+    private Connection conn;
 
     public CaminhaoConsulta() {
         initComponents();
+    }
+
+    private void criaRelatorio(String archiveName, HashMap parametros) {
+        try {
+            conn = Conexao.getConexao();
+            String path = "src/main/java/com/mycompany/sgfc2/view/relatoriosjasper/" + archiveName;
+            JasperReport jr = (JasperReport) JRLoader.loadObjectFromFile(path);
+
+            JasperViewer jv = new JasperViewer(JasperFillManager.fillReport(jr, parametros, conn), false);
+            jv.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            jv.setVisible(true);
+            jv.setTitle("Relatório detalhado de caminhão.");
+
+        } catch (JRException e) {
+            JOptionPane.showMessageDialog(null, "Erro: " + e.getMessage(),
+                    "Erro", JOptionPane.WARNING_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Erro: " + ex.getMessage(),
+                    "Erro", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -153,6 +184,11 @@ public class CaminhaoConsulta extends javax.swing.JInternalFrame {
         btnExibirConsulta.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnExibirConsulta.setText("Exibir Consulta Visualmente");
         btnExibirConsulta.setEnabled(false);
+        btnExibirConsulta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExibirConsultaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlConteudoLayout = new javax.swing.GroupLayout(pnlConteudo);
         pnlConteudo.setLayout(pnlConteudoLayout);
@@ -294,6 +330,8 @@ public class CaminhaoConsulta extends javax.swing.JInternalFrame {
                 chbNão.setSelected(true);
             }
 
+            btnExibirConsulta.setEnabled(true);
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Erro, motivo: " + e.getMessage(), "Erro", JOptionPane.WARNING_MESSAGE);
         }
@@ -303,6 +341,34 @@ public class CaminhaoConsulta extends javax.swing.JInternalFrame {
         verMotorista verMot = new verMotorista(null, true, cam.getMotorista());
         verMot.setVisible(true);
     }//GEN-LAST:event_btnVerCaminhaoActionPerformed
+
+    private void btnExibirConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExibirConsultaActionPerformed
+        HashMap param = new HashMap();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        float peso = 0, valor = 0;
+
+        param.put("id", cam.getId());
+        param.put("ano", cam.getAnoModelo());
+        param.put("quilometragem", cam.getQuilometragem());
+        param.put("marca", cam.getMarca());
+        param.put("ultimaRevisao", cam.getUltimaRevisao().format(formatter));
+        param.put("disponivel", cam.isDisponivel() == true ? "Sim" : "Não");
+        param.put("nomeMot", cam.getMotorista().getNome());
+        param.put("cnhMot", cam.getMotorista().getCnh());
+
+        if (cam.getCarga() != null) {
+            param.put("carga", cam.getCarga().getId());
+            for (NotaFiscal nf : cam.getCarga().getNotasFiscais()) {
+                peso += nf.pesoTotal();
+                valor += nf.valorTotal();
+            }
+            param.put("pesoTotal", peso);
+            param.put("valorTotal", valor);
+            param.put("quantidadeNF", cam.getCarga().getNotasFiscais().size());
+        }
+
+        criaRelatorio("CaminhaoCompletoJasper.jasper", param);
+    }//GEN-LAST:event_btnExibirConsultaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
